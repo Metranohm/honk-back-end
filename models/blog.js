@@ -13,7 +13,7 @@ const commentSchema = new Schema(
   { timestamps: true }
 );
 
-const BlogSchema = new Schema(
+const blogSchema = new Schema(
   {
     title: {
       type: String,
@@ -35,6 +35,6 @@ const BlogSchema = new Schema(
   { timestamps: true }
 );
 
-const Blog = mongoose.model('Blog', BlogSchema);
+const Blog = mongoose.model('Blog', blogSchema);
 
 export { Blog };
