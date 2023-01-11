@@ -67,10 +67,28 @@ const deleteBlog = async (req, res) => {
   }
 }
 
+const createComment = async (req, res) => {
+  try {
+    req.body.author = req.user.profile
+    const blog = await Blog.findById(req.params.id)
+    blog.comments.push(req.body)
+    await blog.save()
+
+    const newComment = blog.comments[blog.comments.length - 1]
+
+    const profile = await Profile.findById(req.user.profile)
+    newComment.author = profile
+    res.status(201).json(newComment)
+  } catch (error) {
+    res.status(500).json(error)
+  }
+}
+
 export {
   create,
   index,
   show,
   update,
   deleteBlog as delete,
+  createComment,
 }
