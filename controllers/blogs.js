@@ -21,7 +21,9 @@ const create = async (req, res) => {
 
 const index = async (req, res) => {
   try {
-    const blogs = await Blog.find({}).populate('author')
+    const blogs = await Blog.find({})
+      .populate('author')
+      .sort({ createdAt: 'desc' })
     res.status(200).json(blogs)
   } catch (error) {
     console.log(error)
@@ -29,7 +31,46 @@ const index = async (req, res) => {
   }
 }
 
+const show = async (req, res) => {
+  try {
+    const blog = await Blog.findById(req.params.id)
+      .populate('author')
+      .populate('comments.author')
+    res.status(200).json(blog)
+  } catch (error) {
+    res.status(500).json(error)
+  }
+}
+
+const update = async (req, res) => {
+  try {
+    const blog = await Blog.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    ).populate('author')
+    res.status(200).json(blog)
+  } catch (error) {
+    res.status(500).json(error)
+  }
+}
+
+const deleteBlog = async (req, res) => {
+  try {
+    const blog = await Blog.findByIdAndDelete(req.params.id)
+    const profile = await Profile.findById(req.user.profile)
+    profile.blogs.remove({ _id: req.params.id })
+    await profile.save()
+    res.status(200).json(blog)
+  } catch (error) {
+    res.status(500).json(error)
+  }
+}
+
 export {
   create,
   index,
+  show,
+  update,
+  deleteBlog as delete,
 }
