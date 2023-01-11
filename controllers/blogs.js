@@ -10,9 +10,11 @@ const create = async (req, res) => {
       { $push: { blogs: blog } },
       { new: true }
     )
-    blog
+    blog.author = profile
+    res.status(201).json(blog)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    console.log(error) 
+    res.status(500).json(error)
   }
 }
 
